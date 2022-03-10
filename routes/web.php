@@ -44,7 +44,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 //         ],
 //         'headers' => [
 //             'Accept'        => 'application/json',
-//             'Authorization' => 'Basic ' . base64_encode('17:PU0Ag1PSRKmHjcNtADyIl19Nv8EHT1uAm1WqUHNK'),
+//             'Authorization' => 'Basic ' . base64_encode('17:YwvWN4dVe0blF7zpwAl2ge61ksTYBrvY8J8NfMT6'),
 //         ],
 //     ]);
 
@@ -75,7 +75,7 @@ Route::get('/authorize', function (Request $request) {
     $request->session()->put('state', $state = Str::random(40));
 
     $query = http_build_query([
-        'client_id' => '17',
+        'client_id' => '19',
         'redirect_uri' => 'http://127.0.0.1:8080/callback',
         'response_type' => 'code',
         'scope' => '',
@@ -92,12 +92,16 @@ Route::get('/callback', function (Request $request) {
             'grant_type'    => 'authorization_code',
             'redirect_uri'  => 'http://127.0.0.1:8080/callback',
             'code'          => $request->code,
-        ],
-        'headers' => [
-            'Accept'        => 'application/json',
-            'Authorization' => 'Basic ' . base64_encode('17:PU0Ag1PSRKmHjcNtADyIl19Nv8EHT1uAm1WqUHNK'),
-        ],
+            'client_id'     => '19',
+            'client_secret' => 'YwvWN4dVe0blF7zpwAl2ge61ksTYBrvY8J8NfMT6'
+        ]
     ]);
 
-    return json_decode((string)$response->getBody(), true);
+    $queryString = json_decode((string)$response->getBody(), true);
+
+    $query = http_build_query([
+        'Authorization' => 'Bearer '. $queryString['access_token'],
+    ]);
+
+    return redirect('http://127.0.0.1:8000/api/user/profile');
 });
