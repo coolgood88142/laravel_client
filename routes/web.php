@@ -60,17 +60,6 @@ Route::group(['prefix' => '/user', 'middleware' => 'auth:api'], function (){
     })->middleware('scope:Email');
 });
 
-Route::get('/redirect', function () {
-    $query = http_build_query([
-        'client_id' => '17',
-        'redirect_uri' => 'http://127.0.0.1:8080/callback',
-        'response_type' => 'code',
-        'scope' => '',
-    ]);
-
-    return redirect('http://127.0.0.1:8000/oauth/authorize?'.$query);
-});
-
 Route::get('/authorize', function (Request $request) {
     $request->session()->put('state', $state = Str::random(40));
 
@@ -99,9 +88,22 @@ Route::get('/callback', function (Request $request) {
 
     $queryString = json_decode((string)$response->getBody(), true);
 
-    $query = http_build_query([
-        'Authorization' => 'Bearer '. $queryString['access_token'],
+    $userInfo = $http->get('http://127.0.0.1:8000/api/user', [
+        'headers' => [
+            'Authorization' => 'Bearer '. $queryString['access_token'],
+        ],
     ]);
 
-    return redirect('http://127.0.0.1:8000/api/user/profile');
+    $user = json_decode((string)$userInfo->getBody(), true);
+
+    return redirect('http://127.0.0.1:8080/verifyUserInfo?name=' . $user['name'] . '&email=' . $user['email'] . '&password=' . $user['password']);
+
+
+
 });
+
+Route::get('verifyUserInfo', 'UserController@verifyUserInfo')->name('verifyUserInfo');
+
+// redirect('http://127.0.0.1:8080/login?email='. $user['email'] . '&');
+
+
