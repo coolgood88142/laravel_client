@@ -96,7 +96,7 @@
                 </div>
 
                 <div>
-                    <input type="button" id="passport" value="passport"/>
+                    <input type="button" id="passport" value="FB登入"/>
                 </div>
             </div>
         </div>

@@ -71,12 +71,12 @@ Route::get('/authorize', function (Request $request) {
         'state' => $state,
     ]);
 
-    return redirect('http://127.0.0.1:8000/oauth/authorize?'.$query);
+    return redirect('http://127.0.0.1:8000/authorizationCode?'.$query);
 });
 
 Route::get('/callback', function (Request $request) {
     $http     = new GuzzleHttp\Client;
-    $response = $http->post('http://127.0.0.1:8000/oauth/token', [
+    $response = $http->post('http://127.0.0.1:8000/accessToken', [
         'form_params' => [
             'grant_type'    => 'authorization_code',
             'redirect_uri'  => 'http://127.0.0.1:8080/callback',
