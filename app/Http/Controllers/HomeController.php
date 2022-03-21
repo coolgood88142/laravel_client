@@ -25,10 +25,4 @@ class HomeController extends Controller
     {
         return view('home');
     }
-
-    public function test()
-    {
-        dd('test');
-        // return view('home');
-    }
 }
