@@ -68,14 +68,46 @@ Route::get('/authorize', function (Request $request) {
         'redirect_uri' => 'http://127.0.0.1:8080/callback',
         'response_type' => 'code',
         'scope' => '',
-        'state' => $state,
+        'state' => 'iWxyED9S2GKfeKCShlbCeibutGDLu97iT2jB2KIe',
     ]);
 
     return redirect('http://127.0.0.1:8000/authorizationCode?'.$query);
 });
 
+Route::get('/getAuthorizationCode', function (Request $request) {
+    return $request->code;
+    // $http     = new GuzzleHttp\Client;
+    // $response = $http->post('http://127.0.0.1:8000/oauth/token', [
+    //     'form_params' => [
+    //         'grant_type'    => 'authorization_code',
+    //         'redirect_uri'  => 'http://127.0.0.1:8080/getAuthorizationCode',
+    //         'code'          => $request->code,
+    //         'client_id'     => '18',
+    //         'client_secret' => 'har2ePG2kSTW2BPNaqVWdiyhg5U3SarVxNpLxZgD'
+    //     ]
+    // ]);
+
+    // $queryString = json_decode((string)$response->getBody(), true);
+
+    // // return $queryString;
+
+    // $userInfo = $http->get('http://127.0.0.1:8000/api/user', [
+    //     'headers' => [
+    //         'Authorization' => 'Bearer '. $queryString['access_token'],
+    //     ],
+    // ]);
+
+    // $user = json_decode((string)$userInfo->getBody(), true);
+    // // return $user;
+
+    // return redirect('http://127.0.0.1:8080/verifyUserInfo?name=' . $user['name'] . '&email=' . $user['email'] . '&password=' . $user['password']);
+
+});
+
 Route::get('/callback', function (Request $request) {
     $http     = new GuzzleHttp\Client;
+    return $request->code;
+    // Log::debug('Authorization Code:' . $request->code);
     $response = $http->post('http://127.0.0.1:8000/oauth/token', [
         'form_params' => [
             'grant_type'    => 'authorization_code',
@@ -88,6 +120,8 @@ Route::get('/callback', function (Request $request) {
 
     $queryString = json_decode((string)$response->getBody(), true);
 
+    // return $queryString;
+
     $userInfo = $http->get('http://127.0.0.1:8000/api/user', [
         'headers' => [
             'Authorization' => 'Bearer '. $queryString['access_token'],
@@ -95,6 +129,7 @@ Route::get('/callback', function (Request $request) {
     ]);
 
     $user = json_decode((string)$userInfo->getBody(), true);
+    // return $user;
 
     return redirect('http://127.0.0.1:8080/verifyUserInfo?name=' . $user['name'] . '&email=' . $user['email'] . '&password=' . $user['password']);
 
