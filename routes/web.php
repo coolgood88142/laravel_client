@@ -89,7 +89,7 @@ Route::get('/getAuthorizationCode', function (Request $request) {
 
     // $queryString = json_decode((string)$response->getBody(), true);
 
-    // // return $queryString;
+    // return $queryString;
 
     // $userInfo = $http->get('http://127.0.0.1:8000/api/user', [
     //     'headers' => [
@@ -106,7 +106,7 @@ Route::get('/getAuthorizationCode', function (Request $request) {
 
 Route::get('/callback', function (Request $request) {
     $http     = new GuzzleHttp\Client;
-    return $request->code;
+    // return $request->code;
     // Log::debug('Authorization Code:' . $request->code);
     $response = $http->post('http://127.0.0.1:8000/oauth/token', [
         'form_params' => [
@@ -128,8 +128,10 @@ Route::get('/callback', function (Request $request) {
         ],
     ]);
 
+    // return 'Bearer '. $queryString['access_token'];
+
     $user = json_decode((string)$userInfo->getBody(), true);
-    // return $user;
+    // return ['user' => $user, 'Bearer' => 'Bearer '. $queryString['access_token']];
 
     return redirect('http://127.0.0.1:8080/verifyUserInfo?name=' . $user['name'] . '&email=' . $user['email'] . '&password=' . $user['password']);
 
